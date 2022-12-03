@@ -13,20 +13,18 @@ public class Day3 {
 
     public Day3(String[] testInput) {
         List<Rucksack> threeSet = new ArrayList<>();
+        this.setsOfThree.add(threeSet);
 
         for (String line : testInput) {
             Rucksack newRucksack = new Rucksack(line);
             rucksacks.add(newRucksack);
 
-            if (threeSet.size() < 3) {
-                threeSet.add(newRucksack);
-            } else {
-                this.setsOfThree.add(threeSet);
+            if (threeSet.size() >= 3) {
                 threeSet = new ArrayList<>();
-                threeSet.add(newRucksack);
+                this.setsOfThree.add(threeSet);
             }
+            threeSet.add(newRucksack);
         }
-        this.setsOfThree.add(threeSet); // add last one to threeset
     }
 
     public long execute1() {
