@@ -13,6 +13,6 @@ public class PacketPair {
     }
 
     public boolean isRightOrder() {
-        return false;
+        return this.left.compare(right) < 0;
     }
 }

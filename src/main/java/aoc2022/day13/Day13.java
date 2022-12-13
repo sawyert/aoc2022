@@ -24,13 +24,10 @@ public class Day13 {
         for (int i=1; i<=this.pairs.size(); i++) {
             PacketPair pair = this.pairs.get(i-1);
             if (pair.isRightOrder()) {
+                System.out.println(i);
                 total += i;
             }
         }
         return total;
-    }
-
-    public long execute2() {
-        return 0;
     }
 }

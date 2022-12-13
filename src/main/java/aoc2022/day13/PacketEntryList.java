@@ -52,4 +52,31 @@ public class PacketEntryList extends AbstractPacketEntry {
 
         return "[" + returnString.toString() + "]";
     }
+
+    @Override
+    protected int compare(AbstractPacketEntry rightEntry) {
+        if (rightEntry instanceof PacketEntryList) {
+            for (int i=0; i<this.entries.size(); i++) {
+                AbstractPacketEntry left = this.entries.get(i);
+                try {
+                    AbstractPacketEntry right = ((PacketEntryList) rightEntry).entries.get(i);
+                    int result = left.compare(right);
+                    if (result != 0) {
+                        return result;
+                    }
+                } catch (IndexOutOfBoundsException ex) {
+                    return 1; // not right order
+                }
+            }
+            if (this.entries.size() < ((PacketEntryList)rightEntry).entries.size()) {
+                return -1;
+            }
+            return 0;
+        } else {
+            PacketEntryList list = new PacketEntryList();
+            list.entries.add(rightEntry);
+
+            return this.compare(list);
+        }
+    }
 }

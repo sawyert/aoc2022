@@ -1,4 +1,5 @@
 package aoc2022.day13;
 
-public class AbstractPacketEntry {
+public abstract class AbstractPacketEntry {
+    protected abstract int compare(AbstractPacketEntry right);
 }

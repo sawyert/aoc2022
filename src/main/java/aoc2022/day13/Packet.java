@@ -12,4 +12,8 @@ public class Packet {
     public String toString() {
         return this.entry.toString();
     }
+
+    public int compare(Packet right) {
+        return this.entry.compare(right.entry);
+    }
 }
