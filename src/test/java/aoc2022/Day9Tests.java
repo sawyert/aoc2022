@@ -28,15 +28,25 @@ public class Day9Tests {
         System.out.println(result);
     }
 
-    //@Test
+    @Test
+    void testPart1UsingPart2() throws IOException, URISyntaxException {
+        String[] testInput = FileReader.read("Day9.txt");
+
+
+        Day9 day9 = new Day9(testInput);
+        long result = day9.execute1UsingPart2();
+        assertEquals(6367, result);
+    }
+
+    @Test
     void testPart2BasicInputWorks() throws IOException, URISyntaxException {
         String[] testInput = FileReader.read("Day9Example.txt");
 
         Day9 day9 = new Day9(testInput);
-        assertEquals(9, day9.execute2());
+        assertEquals(1, day9.execute2());
     }
 
-    //@Test
+    @Test
     void testPart2Answer() throws IOException, URISyntaxException {
         String[] testInput = FileReader.read("Day9.txt");
 

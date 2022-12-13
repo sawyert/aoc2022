@@ -10,13 +10,27 @@ public class Day9 {
 
     public long execute1() {
         for (String instruction : this.testInput) {
-            grid.moveHead(instruction);
+            grid.moveHeadPart1(instruction);
+        }
+
+        return grid.getTailVisitCount();
+    }
+
+    public long execute1UsingPart2() {
+        this.grid.addKnots(1);
+        for (String instruction : this.testInput) {
+            grid.moveHeadPart2(instruction);
         }
 
         return grid.getTailVisitCount();
     }
 
     public long execute2() {
-        return 0;
+        this.grid.addKnots(9);
+        for (String instruction : this.testInput) {
+            grid.moveHeadPart2(instruction);
+        }
+
+        return grid.getTailVisitCount();
     }
 }

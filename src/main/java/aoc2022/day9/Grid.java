@@ -1,27 +1,23 @@
 package aoc2022.day9;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 public class Grid {
-    private int headRow = 0;
-    private int headColumn = 0;
-    private int tailRow = 0;
-    private int tailColumn = 0;
+    private Knot head = new Knot();
+    private Knot tail = new Knot();
+
+    private List<Knot> knots = new ArrayList<>();
 
     private Map<String,String> tailPositions = new HashMap<>();
 
-    public Grid() {
-        this.tailPositions.put(this.getTailPosition(), "Visited");
+    private String getPosition(Knot knot) {
+        return knot.row + "__" + knot.column;
     }
 
-    private String getTailPosition() {
-        return this.tailRow + "__" + this.tailColumn;
-    }
-
-
-    public void moveHead(String instruction) {
+    public void moveHeadPart1(String instruction) {
         String[] instr = instruction.split(" ");
         String direction = instr[0];
         int distance = Integer.parseInt(instr[1]);
@@ -30,69 +26,119 @@ public class Grid {
 
             switch (direction) {
                 case "R":
-                    this.headColumn += 1;
+                    this.head.column += 1;
                     break;
                 case "L":
-                    this.headColumn -= 1;
+                    this.head.column -= 1;
                     break;
                 case "U":
-                    this.headRow += 1;
+                    this.head.row += 1;
                     break;
                 case "D":
-                    this.headRow -= 1;
+                    this.head.row -= 1;
                     break;
             }
-            this.moveTail();
-            this.tailPositions.put(this.getTailPosition(), "Visited");
+            this.moveTailPart1();
+            this.tailPositions.put(this.getPosition(this.tail), "Visited");
         }
     }
 
-    private void moveTail() {
-        if (this.tailSamePositionAsHead()) {
+    private void moveTailPart1() {
+        if (this.samePosition(tail, head)) {
             return; // nothing to do
         }
-        if (this.tailNextToHead()) {
+        if (this.nextTo(tail, head)) {
             return; // nothing to do
         }
-        this.moveTailCloser();
+        this.moveCloser(this.tail, this.head);
     }
 
-    private void moveTailCloser() {
-        if (this.tailColumn != this.headColumn) {
-            if (this.headColumn - this.tailColumn > 0) {
-                this.tailColumn += 1;
+    public void addKnots(int count) {
+        for (int i=0; i<count; i++) {
+            this.knots.add(new Knot());
+        }
+    }
+
+    public void moveHeadPart2(String instruction) {
+        String[] instr = instruction.split(" ");
+        String direction = instr[0];
+        int distance = Integer.parseInt(instr[1]);
+
+        for (int i=0; i<distance; i++) {
+
+            switch (direction) {
+                case "R":
+                    this.head.column += 1;
+                    break;
+                case "L":
+                    this.head.column -= 1;
+                    break;
+                case "U":
+                    this.head.row += 1;
+                    break;
+                case "D":
+                    this.head.row -= 1;
+                    break;
+            }
+
+            Knot target = this.head;
+            for (Knot eachKnot : this.knots) {
+                this.moveKnot(eachKnot, target);
+                target = eachKnot;
+            }
+            this.tailPositions.put(this.getPosition(this.knots.get(this.knots.size()-1)), "Visited");
+        }
+    }
+
+    private void moveKnot(Knot from, Knot target) {
+        if (this.samePosition(from, target)) {
+            return; // nothing to do
+        }
+        if (this.nextTo(from, target)) {
+            return; // nothing to do
+        }
+        this.moveCloser(from, target);
+    }
+
+
+    private void moveCloser(Knot from, Knot target) {
+        if (from.column != target.column) {
+            if (target.column - from.column > 0) {
+                from.column += 1;
             } else {
-                this.tailColumn -= 1;
+                from.column -= 1;
             }
         }
 
-        if (this.tailRow != this.headRow) {
-            if (this.headRow - this.tailRow > 0) {
-                this.tailRow += 1;
+        if (from.row != target.row) {
+            if (target.row - from.row > 0) {
+                from.row += 1;
             } else {
-                this.tailRow -= 1;
+                from.row -= 1;
             }
         }
     }
 
-    private boolean tailNextToHead() {
-        boolean tailAboveHead = this.headRow-1 == this.tailRow && this.headColumn == this.tailColumn;
-        boolean tailTopRightHead = this.headRow-1 == this.tailRow && this.headColumn+1 == this.tailColumn;
-        boolean tailRightHead = this.headRow == this.tailRow && this.headColumn+1 == this.tailColumn;
-        boolean tailBottomRightHead = this.headRow+1 == this.tailRow && this.headColumn+1 == this.tailColumn;
-        boolean tailBelowHead = this.headRow+1 == this.tailRow && this.headColumn == this.tailColumn;
-        boolean tailBottomLeftHead = this.headRow+1 == this.tailRow && this.headColumn-1 == this.tailColumn;
-        boolean tailLeftHead = this.headRow == this.tailRow && this.headColumn-1 == this.tailColumn;
-        boolean tailTopLeftHead = this.headRow-1 == this.tailRow && this.headColumn-1 == this.tailColumn;
+    private boolean nextTo(Knot from, Knot target) {
+        boolean tailAboveHead = target.row-1 == from.row && target.column == from.column;
+        boolean tailTopRightHead = target.row-1 == from.row && target.column+1 == from.column;
+        boolean tailRightHead = target.row == from.row && target.column+1 == from.column;
+        boolean tailBottomRightHead = target.row+1 == from.row && target.column+1 == from.column;
+        boolean tailBelowHead = target.row+1 == from.row && target.column == from.column;
+        boolean tailBottomLeftHead = target.row+1 == from.row && target.column-1 == from.column;
+        boolean tailLeftHead = target.row == from.row && target.column-1 == from.column;
+        boolean tailTopLeftHead = target.row-1 == from.row && target.column-1 ==from.column;
 
         return tailAboveHead || tailTopRightHead || tailRightHead || tailBottomRightHead || tailBelowHead || tailBottomLeftHead || tailLeftHead || tailTopLeftHead;
     }
 
-    private boolean tailSamePositionAsHead() {
-        return this.headColumn == this.tailColumn && this.headRow == this.tailRow;
+    private boolean samePosition(Knot from, Knot target) {
+        return target.column == from.column && target.row == from.row;
     }
 
     public long getTailVisitCount() {
         return this.tailPositions.keySet().size();
     }
+
+
 }
